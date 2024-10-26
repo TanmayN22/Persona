@@ -1,3 +1,13 @@
 streamlit
 google-generativeai
 matplotlib
+dotenv
+PIL
+Image
+os
+re
+json
+time
+StockNews
+yfinance
+Prophet
