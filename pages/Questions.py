@@ -13,8 +13,7 @@ class Pages_switch():
     st.sidebar.page_link("pages/educational.py", label="Educational")
     st.sidebar.page_link("pages/aboutus.py", label="About us")
 
-genai.configure(api_key='')  # add your actual API key here
-
+genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 st.title("Personalized Investment Portfolio Builder")
 
 # Create tabs for different sections of the questionnaire
