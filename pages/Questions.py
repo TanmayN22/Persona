@@ -5,6 +5,7 @@ import time
 import json
 import re
 import os
+from dotenv import load_dotenv
 
 class Pages_switch():
     st.sidebar.page_link("app.py", label="Home")
@@ -13,6 +14,7 @@ class Pages_switch():
     st.sidebar.page_link("pages/news.py", label="News & Trends")
     st.sidebar.page_link("pages/educational.py", label="Educational")
     st.sidebar.page_link("pages/aboutus.py", label="About us")
+
 
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 st.title("Personalized Investment Portfolio Builder")
