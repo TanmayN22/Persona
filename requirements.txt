@@ -6,3 +6,4 @@ Pillow
 yfinance
 prophet
 StockNews
+plotly
