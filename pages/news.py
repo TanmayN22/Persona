@@ -4,6 +4,14 @@ import yfinance as yf
 from prophet import Prophet
 import plotly.graph_objects as go
 
+class Pages_switch():
+    st.sidebar.page_link("app.py", label="Home")
+    st.sidebar.page_link("pages/Questions.py", label="Questionnaire")
+    st.sidebar.page_link("pages/DashBoard.py", label="Dashboard")
+    st.sidebar.page_link("pages/news.py", label="News & Trends")
+    st.sidebar.page_link("pages/educational.py", label="Educational")
+    st.sidebar.page_link("pages/aboutus.py", label="About us")
+
 # Cache stock news data to reduce load on API in deployed environments
 @st.cache_data
 def fetch_stock_news(ticker="", num_articles=5):
