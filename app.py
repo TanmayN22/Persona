@@ -10,6 +10,19 @@ class Pages_switch():
 
 
 # Load and display the logo image (make sure the path is correct)
+st.markdown("""
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
+    .cursive-title {
+        font-family: 'Dancing Script', cursive;
+        font-size: 8vw; /* Adjust size as needed */
+        color: white;
+        text-align: center;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+st.markdown('<h1 class="cursive-title">Persona</h1>', unsafe_allow_html=True)
+
 # logo_image = "images/q.jpeg"  # Replace with your logo's path
 
 # Create a two-column layout
@@ -21,6 +34,7 @@ with col1:
 
 # Display the features in the second column
     with col2:
+        
     # You can leave this empty or add something else if needed
         pass
 
