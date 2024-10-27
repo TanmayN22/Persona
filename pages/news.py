@@ -4,57 +4,77 @@ import yfinance as yf
 from prophet import Prophet
 import plotly.graph_objects as go
 
-class Pages_switch():
-    st.sidebar.page_link("app.py", label="Home")
-    st.sidebar.page_link("pages/Questions.py", label="Questionnaire")
-    st.sidebar.page_link("pages/DashBoard.py", label="Dashboard")
-    st.sidebar.page_link("pages/news.py", label="News & Trends")
-    st.sidebar.page_link("pages/educational.py", label="Educational")
-    st.sidebar.page_link("pages/aboutus.py", label="About us")
+# Cache stock news data to reduce load on API in deployed environments
+@st.cache_data
+def fetch_stock_news(ticker="", num_articles=5):
+    try:
+        st.write("Fetching news data...")  # Log message for debugging
+        sn = StockNews(ticker, save_news=False)
+        return sn.read_rss()
+    except Exception as e:
+        st.write(f"Error fetching news: {e}")
+        return None
 
+# Cache stock data download to avoid re-downloading during session
+@st.cache_data
+def fetch_stock_data(ticker):
+    try:
+        st.write("Downloading stock data...")  # Log message for debugging
+        data = yf.download(ticker, start="2010-01-01")
+        return data
+    except Exception as e:
+        st.write(f"Error fetching stock data: {e}")
+        return None
 
+# Display the stock news in the app
+def display_stock_news(ticker="", num_articles=5, column=None):
+    df_news = fetch_stock_news(ticker, num_articles)
+    if df_news is None:
+        st.error("Failed to retrieve stock news.")
+        return
 
-def fetch_stock_news(ticker="", num_articles=5, column=None):
     if column:
         column.header("Latest Stock News")
     else:
         st.header("Latest Stock News")
 
-    sn = StockNews(ticker, save_news=False)
-    df_news = sn.read_rss()
-
     for i in range(min(num_articles, len(df_news))):
-        with column:
-            column.subheader(f"News {i + 1}")
-            column.write(f"**Published:** {df_news['published'][i]}")
-            column.write(f"**Title:** {df_news['title'][i]}")
-            column.write(f"**Summary:** {df_news['summary'][i]}")
+        if column:
+            with column:
+                column.subheader(f"News {i + 1}")
+                column.write(f"**Published:** {df_news['published'][i]}")
+                column.write(f"**Title:** {df_news['title'][i]}")
+                column.write(f"**Summary:** {df_news['summary'][i]}")
+        else:
+            st.subheader(f"News {i + 1}")
+            st.write(f"**Published:** {df_news['published'][i]}")
+            st.write(f"**Title:** {df_news['title'][i]}")
+            st.write(f"**Summary:** {df_news['summary'][i]}")
 
-
+# Fetch stock data, train Prophet model, and visualize the results
 def fetch_stock_data_and_visualize(ticker, column=None):
-    try:
-        data = yf.download(ticker, start="2010-01-01")
-        if data.empty:
-            column.error(f"No data found for ticker: {ticker}")
-            return
+    data = fetch_stock_data(ticker)
+    if data is None or data.empty:
+        column.error(f"No data found for ticker: {ticker}")
+        return
 
+    try:
         data.reset_index(inplace=True)
         data = data[['Date', 'Open', 'High', 'Low', 'Close']]
         data.columns = ['ds', 'Open', 'High', 'Low', 'y']
         data['ds'] = data['ds'].dt.tz_localize(None)
 
-        model = Prophet(daily_seasonality=True)
+        model = Prophet(yearly_seasonality=False, weekly_seasonality=True, daily_seasonality=True)
         model.fit(data[['ds', 'y']])
 
         future = model.make_future_dataframe(periods=30)
         forecast = model.predict(future)
 
-        # Create a copy of forecast with renamed columns for display only
         forecast_display = forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].copy()
         forecast_display = forecast_display.rename(columns={
             'yhat': 'Actual Prediction', 
-            'yhat_lower': '-10', 
-            'yhat_upper': '+10'
+            'yhat_lower': 'Lower Bound', 
+            'yhat_upper': 'Upper Bound'
         })
 
         fig = go.Figure()
@@ -90,26 +110,23 @@ def fetch_stock_data_and_visualize(ticker, column=None):
                           xaxis_rangeslider_visible=False)
 
         column.plotly_chart(fig)
-
         column.write(forecast_display.tail(30))
 
     except Exception as e:
-        column.error(f"An error occurred: {e}")
+        column.error(f"An error occurred while processing data: {e}")
 
-
+# Main function to render the app
 def main():
     st.title("Stock News and Price Forecast App")
 
     ticker = st.text_input("Enter Stock Ticker:").upper()
-    
-    # Create two columns
     col1, col2 = st.columns(2)
 
     if ticker:
-        fetch_stock_news(ticker, column=col1)
+        display_stock_news(ticker, column=col1)
         fetch_stock_data_and_visualize(ticker, column=col2)
     else:
-        fetch_stock_news(column=col1)
+        display_stock_news(column=col1)
 
 if __name__ == "__main__":
     main()
