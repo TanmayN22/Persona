@@ -5,6 +5,6 @@
 <h2>Steps to install</h2>
 <h3>Clone the Repository</h3>
 Step 1- Open your terminal and clone the Persona repository from GitHub by running:
-git clone https://github.com/yourusername/persona.git
+        git clone https://github.com/yourusername/persona.git
 
 
