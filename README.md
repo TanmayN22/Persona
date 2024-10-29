@@ -1,5 +1,8 @@
 # Persona - Personal Portfolia Planner
 Persona is a personal finance application built with Streamlit that helps users manage and track their finances effectively. Designed as a comprehensive budget planner, Persona provides insights into spending habits and offers personalized financial advice to help users achieve their financial goals.
+
+You can checkout the website by clicking this : [Persona](https://personaa.streamlit.app/)
+
 ## Steps to Install
 ### 1. Clone the Repository
 
