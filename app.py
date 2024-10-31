@@ -9,24 +9,39 @@ class Pages_switch():
     st.sidebar.page_link("pages/aboutus.py", label="About us")
 
 
-# Load and display the logo image (make sure the path is correct)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
+
     .cursive-title {
         font-family: 'Dancing Script', cursive;
         font-size: 8vw; /* Adjust size as needed */
-        color: white;
         text-align: center;
     }
     </style>
+
+    <script>
+    const setColorScheme = () => {
+        const darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const titleElement = document.querySelector('.cursive-title');
+        if (darkMode) {
+            titleElement.style.color = 'white';  // White font for dark mode
+        } else {
+            titleElement.style.color = 'black';  // Black font for light mode
+        }
+    };
+
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', setColorScheme);
+    window.onload = setColorScheme;  // Set color on page load
+    </script>
     """, unsafe_allow_html=True)
+
 st.markdown('<h1 class="cursive-title">Persona</h1>', unsafe_allow_html=True)
 
 # logo_image = "images/q.jpeg"  # Replace with your logo's path
 
 # Create a two-column layout
-col1, col2 = st.columns([1, 2])  # Adjust the ratio to your liking
+col1, col2 = st.columns([1, 4])  # Adjust the ratio to your liking
 
 # Display the logo in the first column
 with col1:
