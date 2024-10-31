@@ -41,7 +41,7 @@ st.markdown('<h1 class="cursive-title">Persona</h1>', unsafe_allow_html=True)
 # logo_image = "images/q.jpeg"  # Replace with your logo's path
 
 # Create a two-column layout
-col1, col2 = st.columns([1, 3])  # Adjust the ratio to your liking
+col1, col2 = st.columns([1, 4])  # Adjust the ratio to your liking
 
 # Display the logo in the first column
 with col1:
